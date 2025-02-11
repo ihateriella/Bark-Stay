@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Bark & Stay</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="register-container">
+            <div class="top-design"></div>
+            <h1>Register an <br> Account</h1>
+            <p>Already Registered? <a href="index.html">Log in here.</a></p>
+
+            <form id="register-form" action="#" method="post">
+                <div class="form-group">
+                    <label for="name">NAME</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">EMAIL</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">PASSWORD</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">CONFIRM PASSWORD</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Re-enter your password" required>
+                    <span id="password-error" class="warning"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="dob">DATE OF BIRTH</label>
+                    <div class="dob-group">
+                        <select id="dob-month" name="dob-month" required>
+                            <option disabled selected>Month</option>
+                            <option>January</option>
+                            <option>February</option>
+                            <option>March</option>
+                            <option>April</option>
+                            <option>May</option>
+                            <option>June</option>
+                            <option>July</option>
+                            <option>August</option>
+                            <option>September</option>
+                            <option>October</option>
+                            <option>November</option>
+                            <option>December</option>
+                        </select>
+                        <select id="dob-day" name="dob-day" required>
+                            <option disabled selected>Day</option>
+                            <script>
+                                for (let i = 1; i <= 31; i++) {
+                                    document.write(`<option>${i}</option>`);
+                                }
+                            </script>
+                        </select>
+                        <select id="dob-year" name="dob-year" required>
+                            <option disabled selected>Year</option>
+                            <script>
+                                const currentYear = new Date().getFullYear();
+                                for (let i = currentYear - 100; i <= currentYear; i++) {
+                                    document.write(`<option>${i}</option>`);
+                                }
+                            </script>
+                        </select>
+                    </div>
+                    <span id="dob-error" class="warning"></span>
+                </div>
+
+                <!-- Next Button -->
+                <button class="button" type="button" id="next-btn" disabled onclick="goToPetAttribute()">Next</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function saveToLocalStorage() {
+            const formData = {};
+            document.querySelectorAll("#register-form input, #register-form select").forEach(input => {
+                formData[input.id] = input.value;
+            });
+            localStorage.setItem("registerFormData", JSON.stringify(formData));
+        }
+
+        function loadFromLocalStorage() {
+            const savedData = JSON.parse(localStorage.getItem("registerFormData"));
+            if (savedData) {
+                document.querySelectorAll("#register-form input, #register-form select").forEach(input => {
+                    if (savedData[input.id]) {
+                        input.value = savedData[input.id];
+                    }
+                });
+            }
+        }
+
+        function validateForm() {
+            let isValid = true;
+            let password = document.getElementById("password").value;
+            let confirmPassword = document.getElementById("confirm-password").value;
+            let errorMessage = document.getElementById("password-error");
+            let dobMonth = document.getElementById("dob-month").value;
+            let dobDay = document.getElementById("dob-day").value;
+            let dobYear = document.getElementById("dob-year").value;
+            let dobError = document.getElementById("dob-error");
+
+            // Check required fields
+            document.querySelectorAll("#register-form input, #register-form select").forEach(input => {
+                if (!input.value || input.value === "Month" || input.value === "Day" || input.value === "Year") {
+                    isValid = false;
+                }
+            });
+
+            // Password validation
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "❌ Passwords do not match!";
+                document.getElementById("confirm-password").style.border = "2px solid red";
+                isValid = false;
+            } else {
+                errorMessage.textContent = "";
+                document.getElementById("confirm-password").style.border = "";
+            }
+
+            // Date of Birth validation
+            if (dobMonth === "Month" || dobDay === "Day" || dobYear === "Year") {
+                dobError.textContent = "⚠️ Please complete your Date of Birth.";
+                document.getElementById("dob-month").style.border = "2px solid red";
+                document.getElementById("dob-day").style.border = "2px solid red";
+                document.getElementById("dob-year").style.border = "2px solid red";
+                isValid = false;
+            } else {
+                dobError.textContent = "";
+                document.getElementById("dob-month").style.border = "";
+                document.getElementById("dob-day").style.border = "";
+                document.getElementById("dob-year").style.border = "";
+            }
+
+            document.getElementById("next-btn").disabled = !isValid;
+        }
+
+        function goToPetAttribute() {
+            saveToLocalStorage();
+            window.location.href = "pet-attribute.html";
+        }
+
+        document.getElementById("register-form").addEventListener("input", () => {
+            saveToLocalStorage();
+            validateForm();
+        });
+
+        loadFromLocalStorage();
+        validateForm();
+    </script>
+</body>
+</html>

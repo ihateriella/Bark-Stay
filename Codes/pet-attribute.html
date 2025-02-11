@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Attribute - Bark & Stay</title>
+    <link rel="stylesheet" href="pet-att.css">
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="goBack()">&#8592;</button>
+        
+        <h1>Pet Attribute</h1>
+
+        <form id="pet-form" action="#" method="post">
+            <div class="form-group">
+                <label for="pet-name">PET NAME</label>
+                <input type="text" id="pet-name" name="pet-name" required>
+                <span class="warning">* This field is required</span>
+            </div>
+
+            <div class="form-group">
+                <label for="breed">BREED</label>
+                <input type="text" id="breed" name="breed" required>
+                <span class="warning">* This field is required</span>
+            </div>
+
+            <div class="form-group">
+                <label for="size">SIZE</label>
+                <select id="size" name="size" required>
+                    <option value="" disabled selected>Select</option>
+                    <option>Small</option>
+                    <option>Medium</option>
+                    <option>Large</option>
+                </select>
+                <span class="warning">* Please select a size</span>
+            </div>
+
+            <div class="form-group">
+                <label for="age">AGE</label>
+                <div class="age-container">
+                    <input type="number" id="age" name="age" required placeholder="Enter age" min="1">
+                    <select id="age-unit" name="age-unit" required>
+                        <option disabled selected>Select unit</option>
+                        <option value="days">Days</option>
+                        <option value="months">Months</option>
+                        <option value="years">Years</option>
+                    </select>
+                </div>
+                <span class="warning">* Please enter a valid age</span>
+            </div>
+
+            <div class="form-group">
+                <label for="diet">DIET</label>
+                <input type="text" id="diet" name="diet" placeholder="Enter dietary preferences" required>
+                <span class="warning">* This field is required</span>
+            </div>
+
+            <div class="form-group">
+                <label for="photo">PHOTO</label>
+                <input type="file" id="photo" name="photo" accept="image/*" required>
+                <span class="warning">* Please upload a photo</span>
+            </div>
+
+            <a href="#" id="add-more-pet" class="add-more-pet">+ Add another pet</a>
+
+            <button class="button" type="submit" id="submit-btn" disabled>Submit</button>
+        </form>
+    </div>
+
+    <script>
+        function savePetFormData() {
+            const petFormData = {};
+            document.querySelectorAll("#pet-form input, #pet-form select").forEach(input => {
+                petFormData[input.id] = input.value;
+            });
+            localStorage.setItem("petFormData", JSON.stringify(petFormData));
+        }
+
+        function loadPetFormData() {
+            const savedPetData = JSON.parse(localStorage.getItem("petFormData"));
+            if (savedPetData) {
+                document.querySelectorAll("#pet-form input, #pet-form select").forEach(input => {
+                    if (savedPetData[input.id]) {
+                        input.value = savedPetData[input.id];
+                    }
+                });
+            }
+        }
+
+        function validatePetForm() {
+            let isValid = true;
+            document.querySelectorAll("#pet-form input, #pet-form select").forEach(input => {
+                if (!input.value) {
+                    isValid = false;
+                }
+            });
+            document.getElementById("submit-btn").disabled = !isValid;
+        }
+
+        function goBack() {
+            savePetFormData();
+            window.location.href = 'register.html';
+        }
+
+        document.getElementById("pet-form").addEventListener("input", function () {
+            savePetFormData();
+            validatePetForm();
+        });
+
+        document.getElementById("add-more-pet").addEventListener("click", function (event) {
+            event.preventDefault();
+            document.getElementById("pet-form").reset();
+            savePetFormData();
+        });
+
+        loadPetFormData();
+        validatePetForm();
+    </script>
+</body>
+</html>
